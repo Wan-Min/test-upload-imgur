@@ -41,33 +41,77 @@ function ajaxUploadImage(method, url, data){
                         width: '300px',
                         heightAuto: false 
                     })
-                    // .then(function(){
-                        // if(id.split('_').length > 1 || update){
-                        //     $('#'+id).attr('src',data)
-                        // }
-                        // else{
-                            // $('#show_create_image').html('');
-                            // $('#show_create_image').append('<img class="img-responsive img-shadow" style="object-fit: cover;width: 100%;height: 10rem !important;" name="image" id="uploadImage" src="'+data+'">');
-                            // $('#create_image').val(data)
-                        // }
-                        
-                        // if(update){
-                        //     $.ajax({
-                        //         method: 'PUT',
-                        //         url: route,
-                        //         headers: {
-                        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        //         },
-                        //         async: false,
-                        //         data: {
-                        //             image: data,
-                        //             lang: lang,
-                        //             key: key,
-                        //             migration: migration
-                        //         }
-                        //     }) 
-                        // }
-                    // })
+                }
+            });
+        }
+    }
+}
+
+function ajaxCheckAlbum(method, url, data){
+    return {
+        method: method,
+        url: url,
+        data: data,
+        request: function request() {
+            $.ajax({
+                type: this.method,
+                url: this.url,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: this.data,
+                processData : false, // 告訴jQuery不要去處理髮送的資料
+                contentType : false, // 告訴jQuery不要去設定Content-Type請求頭
+                mimeType: 'multipart/form-data',
+                async: false,
+                error: function(data) {
+                    $('#album_ans').html('');
+                    $('#album_ans').append('<span class="badge badge-danger">This album was not found.</span>');
+                    var error = data.responseJSON;
+                    console.log(data)
+                    console.log(error)
+                },
+                success: function(data) {
+                    $('#album_ans').html('');
+                    $('#album_ans').append('<span class="badge badge-success">Verification succeeded.</span>');
+                }
+            });
+        }
+    }
+}
+
+function ajaxGetAccessToken(method, url, data){
+    return {
+        method: method,
+        url: url,
+        data: data,
+        request: function request() {
+            $.ajax({
+                type: this.method,
+                url: this.url,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: this.data,
+                processData : false, // 告訴jQuery不要去處理髮送的資料
+                contentType : false, // 告訴jQuery不要去設定Content-Type請求頭
+                mimeType: 'multipart/form-data',
+                async: false,
+                error: function(data) {
+                    var error = data.responseJSON;
+                    console.log(data)
+                    console.log(error)
+                },
+                success: function(data) {
+                    console.log(JSON.parse(data))
+                    let dataItem = JSON.parse(data);
+                    $date = new Date();
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    localStorage.removeItem('lastTime');
+                    localStorage.setItem('refreshToken', dataItem.refreshToken);
+                    localStorage.setItem('accessToken', dataItem.accessToken);
+                    localStorage.setItem('lastTime', JSON.stringify($date));
                 }
             });
         }
