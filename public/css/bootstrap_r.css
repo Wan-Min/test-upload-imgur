@@ -1,0 +1,117 @@
+@charset "utf-8";
+
+.mb-0{ margin-bottom: 0px; }
+.mb-10{ margin-bottom: 10px; }
+.mb-20{ margin-bottom: 20px; }
+.mb-30{ margin-bottom: 30px; }
+.mb-40{ margin-bottom: 40px; }
+.mb-50{ margin-bottom: 50px; }
+.mb-60{ margin-bottom: 60px; }
+.mb-70{ margin-bottom: 70px; }
+.mb-80{ margin-bottom: 80px; }
+.mb-90{ margin-bottom: 90px; }
+.mb-100{ margin-bottom: 100px; }
+
+.mt-0{ margin-top: 0px; }
+.mt-10{ margin-top: 10px; }
+.mt-20{ margin-top: 20px; }
+.mt-30{ margin-top: 30px; }
+.mt-40{ margin-top: 40px; }
+.mt-50{ margin-top: 50px; }
+.mt-60{ margin-top: 60px; }
+.mt-70{ margin-top: 70px; }
+.mt-80{ margin-top: 80px; }
+.mt-90{ margin-top: 90px; }
+.mt-100{ margin-top: 100px; }
+
+.ml-0{ margin-left: 0px; }
+.ml-10{ margin-left: 10px; }
+.ml-20{ margin-left: 20px; }
+.ml-30{ margin-left: 30px; }
+.ml-40{ margin-left: 40px; }
+.ml-50{ margin-left: 50px; }
+
+.mr-0{ margin-right: 0px; }
+.mr-10{ margin-right: 10px; }
+.mr-20{ margin-right: 20px; }
+.mr-30{ margin-right: 30px; }
+.mr-40{ margin-right: 40px; }
+.mr-50{ margin-right: 50px; }
+
+
+.img-100{
+	width: 100%;
+}
+.img-max100{
+	max-width: 100%;
+}
+
+.tc{
+	text-align: center;
+}
+.tr{
+    text-align: right;
+}
+.tl{
+    text-align: left;
+}
+
+
+
+
+/* Circle Buttons */
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.428571429;
+}
+
+.btn-circle.btn-lg {
+    width: 50px;
+    height: 50px;
+    padding: 10px 16px;
+    border-radius: 25px;
+    font-size: 18px;
+    line-height: 1.33;
+}
+
+.btn-circle.btn-xl {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    border-radius: 35px;
+    font-size: 24px;
+    line-height: 1.33;
+}
+
+
+
+/* bs slider 淡入淡出 */
+.carousel-fade .carousel-inner .item {
+transition-property: opacity;
+}
+.carousel-fade .carousel-inner .item,  
+.carousel-fade .carousel-inner .active.left,  
+.carousel-fade .carousel-inner .active.right {
+   opacity: 0;
+}
+.carousel-fade .carousel-inner .active,  
+.carousel-fade .carousel-inner .next.left,  
+.carousel-fade .carousel-inner .prev.right {
+    opacity: 1;
+}
+.carousel-fade .carousel-inner .next,  
+.carousel-fade .carousel-inner .prev,  
+.carousel-fade .carousel-inner .active.left,  
+.carousel-fade .carousel-inner .active.right {
+    left: 0;
+    transform: translate3d(0, 0, 0);
+}
+.carousel-fade .carousel-control {
+    z-index: 2;
+}
