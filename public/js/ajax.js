@@ -19,28 +19,15 @@ function ajaxUploadImage(method, url, data){
                     var error = data.responseJSON;
                     console.log(data)
                     console.log(error)
-                    // errorsHtml = '';
-                    // errorsHtml += '<li>'+ error.errors +'</li>';
-                    
-                    Swal.fire({
-                        html: '<span class="f-family" style="color: #707070;font-size: 14px;font-weight:600;">'+errorsHtml+'</span>',
-                        icon: 'error',
-                        showConfirmButton: false,
-                        width: '300px',
-                        heightAuto: false,
-                    })
+                    $('#upload_ans').html('');
+                    $('#upload_ans').append('<span class="badge badge-danger">Upload faild.</span>');
                 },
                 success: function(data) {
-                    console.log(data.link)
-                    Swal.fire({
-                        title: '上傳成功',
-                        icon: 'success',
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                        timer: 970,
-                        width: '300px',
-                        heightAuto: false 
-                    })
+                    console.log(JSON.parse(data))
+                    let dataItem = JSON.parse(data);
+                    $('#upload_ans').html('');
+                    $('#upload_ans').append('<span class="badge badge-success">Upload success.</span>');
+                    // Image url: '+dataItem.imgLink+'
                 }
             });
         }
