@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::group(['namespace'=>'Api'], function(){
-    Route::post('/get/access/token','UploadImageController@getAccessToken')->name('access.token');
-    Route::post('/upload/image','UploadImageController@upload')->name('upload.image');
-    Route::post('/check/album','UploadImageController@getAlbum')->name('check.album');
+    Route::post('/get/access/token','ImageController@getAccessToken')->name('access.token');
+    Route::post('/upload/image','ImageController@upload')->name('upload.image');
+    Route::post('/check/album','ImageController@getAlbum')->name('check.album');
 });

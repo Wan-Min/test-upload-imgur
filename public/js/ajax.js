@@ -23,11 +23,10 @@ function ajaxUploadImage(method, url, data){
                     $('#upload_ans').append('<span class="badge badge-danger">Upload faild.</span>');
                 },
                 success: function(data) {
-                    console.log(JSON.parse(data))
                     let dataItem = JSON.parse(data);
                     $('#upload_ans').html('');
                     $('#upload_ans').append('<span class="badge badge-success">Upload success.</span>');
-                    // Image url: '+dataItem.imgLink+'
+                    $('#image_holder').attr('src',dataItem.file);
                 }
             });
         }

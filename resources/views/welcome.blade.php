@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="csrf-token" content="{{ csrf_token() }}">
-
         <title>Laravel</title>
 
         <!-- Fonts -->
@@ -25,7 +24,7 @@
 
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
             <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-                <button class="btn btn-outline-secondary" type="button" id="testAccess" onclick="getAccessToken()">Get Access Token</button>
+                {{-- <button class="btn btn-outline-secondary" type="button" id="testAccess" onclick="getAccessToken()">Get Access Token</button> --}}
                 <form class="form" id="upload_form">
                     <div class="form-group">
                         <div id="album_ans">
@@ -36,13 +35,14 @@
                                 <button class="btn btn-outline-secondary" type="button" id="button-album">Check</button>
                             </div>
                         </div>
-
                     </div>
                     <div class="form-group">
+                        <div id="upload_ans">
+                        </div>
                         <div class="input-group">
                             <div class="custom-file">
                                 <input type="file" name="file" class="custom-file-input" id="uploadImageFile" aria-describedby="button-upload">
-                                <label class="custom-file-label" for="uploadImageFile">Choose File</label>
+                                <label class="custom-file-label" id="uploadImageFileLabel" for="uploadImageFile">Choose File</label>
                             </div>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="button-upload">Upload</button>
@@ -50,6 +50,9 @@
                         </div>
                     </div>
                 </form>
+                <div>
+                    <img id="image_holder" src="" alt="" referrerpolicy="no-referrer">
+                </div>
             </div>
         </div>
 
@@ -62,6 +65,7 @@
         <script src="/js/sweetalert2.all.min.js"></script>
 
         <script type="text/javascript">
+            //check token life time
             function getAccessToken(){
                 let now_time = new Date();
                 var last_time = new Date(localStorage.getItem('lastTime'));
@@ -74,7 +78,9 @@
                 }
             }
 
+            //upload image to imgur
             $('#button-upload').on('click',function(){
+                getAccessToken();
                 var formData = new FormData();
                 var file = document.getElementById('uploadImageFile').files[0];
                 var album = $('#setAlbum').val();
@@ -84,24 +90,34 @@
                 formData.append('access_token', localStorage.getItem('accessToken'));
                 var ajaxRequest = new ajaxUploadImage('POST', '{{ route('upload.image') }}',formData);
                 ajaxRequest.request();
+                
             })
 
+            //監聽 filie 變化
+            document.querySelector('.custom-file-input').addEventListener('change',function(e){
+                var fileName = document.getElementById("uploadImageFile").files[0].name;
+                var nextSibling = e.target.nextElementSibling
+                nextSibling.innerText = fileName
+            })
+
+            //check album isset
             $('#button-album').on('click',function(){
-                var formData = new FormData();
+                getAccessToken();
                 var album = $('#setAlbum').val();
-                formData.append('album', album);
-                formData.append('refresh_token', localStorage.getItem('refreshToken'));
-                formData.append('access_token', localStorage.getItem('accessToken'));
-                var ajaxRequest = new ajaxCheckAlbum('POST', '{{ route('check.album') }}',formData);
-                ajaxRequest.request();
+                if(album != ''){
+                    var formData = new FormData();
+                    formData.append('album', album);
+                    formData.append('refresh_token', localStorage.getItem('refreshToken'));
+                    formData.append('access_token', localStorage.getItem('accessToken'));
+                    var ajaxRequest = new ajaxCheckAlbum('POST', '{{ route('check.album') }}',formData);
+                    ajaxRequest.request();
+                }
+                else{
+                    $('#album_ans').html('');
+                    $('#album_ans').append('<span class="badge badge-warning">Please enter the album ID.</span>');
+                }
             })
         </script>
     </body>
 </html>
-{{-- if(difference_day >= '25'){
-                    var formData = new FormData();
-                    formData.append('refresh_token', localStorage.getItem('refreshToken'));
-                    var ajaxRequest = new ajaxGetAccessToken('POST', '{{ route('access.token') }}',formData);
-                    ajaxRequest.request();
-                } --}}
                 
