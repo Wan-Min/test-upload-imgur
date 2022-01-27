@@ -155,7 +155,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN', null),
+    'domain' => env('SESSION_DOMAIN', 'https://ce7c-61-224-88-237.ngrok.io'),
 
     /*
     |--------------------------------------------------------------------------

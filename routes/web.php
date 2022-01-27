@@ -13,12 +13,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function () { return view('imgur'); });
+Route::get('/social-login', function () { return view('social'); });
 
 Route::group(['namespace'=>'Api'], function(){
+    //imgur
     Route::post('/get/access/token','ImageController@getAccessToken')->name('access.token');
     Route::post('/upload/image','ImageController@upload')->name('upload.image');
     Route::post('/check/album','ImageController@getAlbum')->name('check.album');
+    //social-login
+    Route::group(['prefix'=>'social'], function(){
+        Route::group(['prefix'=>'line'], function(){
+            Route::get('/', 'SocialLoginController@line')->name('line.login');
+            Route::get('callback', 'SocialLoginController@callback')->name('line.callback');
+        });
+    });
 });
