@@ -1,50 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>Laravel</title>
-
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-
-        <link rel="stylesheet" href="/css/bootstrap.min.css">
-        <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
-        <link href="/css/bootstrap_r.css" rel="stylesheet">
-        <link href="/css/default.css" rel="stylesheet">
-
-        <style>
-            body {
-                font-family: 'Nunito', sans-serif;
-            }
-        </style>
-    </head>
-    <body class="antialiased">
-
-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
-            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-                <ul>
-                    <li>content</li>
-                </ul>
-                <form class="form-signin">
-                    <div class="text-center mb-4">
-                        <a href="{{ route('line.login') }}"><img class="mb-4" src="/images/btn_login_base.png"></a>
-                    </div>
+@extends('default')
+@section('page')
+    <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+            @if(!Auth::check())
+                <form id="login_form">
+                    <fieldset style="border: 0px;">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="email" placeholder="帳號" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="password" class="form-control" name="password" placeholder="密碼" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" style="width: 100%; color:white;" onclick="user_login()">登入</button>
+                            {{-- <button type="button" class="btn btn-secondary" style="width: 49%">註冊</button> --}}
+                        </div>
+                    </fieldset>
                 </form>
-            </div>
+            @endif
+            @if(!Auth::check())
+                <div class="form-group">
+                    <a href="{{ route('line.login') }}"><img class="mb-4" src="/images/btn_login_base.png"></a>
+                </div>
+            @endif
+
+            @if(Auth::check())
+                <ul>
+                    <li>user: {{ Auth::user()->name }}</li>
+                    <li>email: {{ Auth::user()->email }}</li>
+                </ul>
+                <div class="form-group">
+                    <a href="{{ route('user.logout') }}" type="button" class="btn btn-primary" style="width: 100%; color:white;">登出</a>
+                </div>
+            @endif
         </div>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="/js/bootstrap.min.js"></script>
-        <script src="/js/wow.js"></script>
-        <script src="/js/ajax.js"></script>
-        <script src="https://kit.fontawesome.com/588be6838c.js"></script>
-        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="/js/sweetalert2.all.min.js"></script>
-
-        <script type="text/javascript">
-        </script>
-    </body>
-</html>
+    </div>
+@endsection
+@section('js')
+    <script type="text/javascript">
+        function user_login(){
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('user.login') }}',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $('#login_form').serialize(),
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(data) {
+                    console.log(data.responseJSON)
+                }
+            });
+        }
+        
+    </script>
+@endsection
                 

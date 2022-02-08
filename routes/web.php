@@ -23,6 +23,8 @@ Route::group(['namespace'=>'Api'], function(){
     Route::post('/check/album','ImageController@getAlbum')->name('check.album');
     //social-login
     Route::group(['prefix'=>'social'], function(){
+        Route::post('/login', 'SocialLoginController@login')->name('user.login');
+        Route::get('/logout', 'SocialLoginController@logout')->name('user.logout');
         Route::group(['prefix'=>'line'], function(){
             Route::get('/', 'SocialLoginController@line')->name('line.login');
             Route::get('callback', 'SocialLoginController@callback')->name('line.callback');

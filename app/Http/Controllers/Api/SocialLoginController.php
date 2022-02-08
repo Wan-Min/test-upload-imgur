@@ -5,32 +5,64 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 class SocialLoginController extends Controller
 {
+    public function __construct(){
+		$this->middleware('guest:web', ['except'=>['logout']]);
+	}
+
     //Line授權
-    public function line()
-    {
+    public function line(){
         return Socialite::with('line')->redirect();
     }
 
     //Line callback
-    public function callback()
-    {
+    public function callback(){
         $socialUser = Socialite::driver('line')->stateless()->user();
-        logger(json_encode($socialUser));
-        $User = User::where('lineID',$socialUser->getId())->first();
-        if($User == null){
-            $User = User::create([
+        $LineUser = User::where('lineID',$socialUser->getId())->first();
+
+        if($LineUser == null){
+            $LineUser = User::create([
                 'name' => $socialUser->getName(),
                 'email' => $socialUser->getEmail(),
-                'password' => Hash::make(Str::random(8)),
+                'password' => Hash::make('2r1631'),
+                // 'password' => Hash::make(Str::random(8)),
+                'lineID' => $socialUser->getId(),
             ]);
         }
 
-        //do user login in web
+        try {
+            Auth::loginUsingId($LineUser->id);
+            return view('social');
+        } catch (\Throwable $e) {
+           logger(json_encode($e->getMessage()));
+        }
+    }
+
+    public function login(Request $request){
+        logger(json_encode($request->all()));
+        $User = User::where('email',$request->email)->first();
+        if($User != null && Hash::check($request->passwor,$User->password)){
+            try {
+                Auth::loginUsingId($User->id);
+                return view('social');
+            } catch (\Throwable $e) {
+               logger(json_encode($e->getMessage()));
+            }
+        }
+    }
+
+    public function logout(){
+        Auth::logout();
+        return view('social');
+    }
+
+    public function dashboard(){
+        return view('social');
     }
 }
