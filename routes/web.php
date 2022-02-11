@@ -14,17 +14,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () { return view('imgur'); });
-Route::get('/social-login', function () { return view('social'); });
+
+Route::get('login-page','LoginController@loginPage')->name('loginPage');
+Route::post('/login', 'LoginController@login')->name('user.login');
+Route::get('logout', 'LoginController@logout')->name('user.logout');
+Route::group(['middleware'=>'auth:web'], function(){
+    Route::get('dashboard', 'LoginController@dashboard')->name('dashboard');
+});
 
 Route::group(['namespace'=>'Api'], function(){
     //imgur
     Route::post('/get/access/token','ImageController@getAccessToken')->name('access.token');
     Route::post('/upload/image','ImageController@upload')->name('upload.image');
     Route::post('/check/album','ImageController@getAlbum')->name('check.album');
+    
     //social-login
     Route::group(['prefix'=>'social'], function(){
-        Route::post('/login', 'SocialLoginController@login')->name('user.login');
-        Route::get('/logout', 'SocialLoginController@logout')->name('user.logout');
         Route::group(['prefix'=>'line'], function(){
             Route::get('/', 'SocialLoginController@line')->name('line.login');
             Route::get('callback', 'SocialLoginController@callback')->name('line.callback');

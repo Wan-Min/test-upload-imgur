@@ -12,10 +12,6 @@ use Illuminate\Support\Str;
 
 class SocialLoginController extends Controller
 {
-    public function __construct(){
-		$this->middleware('guest:web', ['except'=>['logout']]);
-	}
-
     //Line授權
     public function line(){
         return Socialite::with('line')->redirect();
@@ -30,39 +26,26 @@ class SocialLoginController extends Controller
             $LineUser = User::create([
                 'name' => $socialUser->getName(),
                 'email' => $socialUser->getEmail(),
-                'password' => Hash::make('2r1631'),
-                // 'password' => Hash::make(Str::random(8)),
+                'password' => $this->setPasswordAttribute('123456'),
                 'lineID' => $socialUser->getId(),
             ]);
         }
 
-        try {
-            Auth::loginUsingId($LineUser->id);
-            return view('social');
-        } catch (\Throwable $e) {
-           logger(json_encode($e->getMessage()));
-        }
+        Auth::login($LineUser);
+        return redirect()->to('dashboard');
     }
 
-    public function login(Request $request){
-        logger(json_encode($request->all()));
-        $User = User::where('email',$request->email)->first();
-        if($User != null && Hash::check($request->passwor,$User->password)){
-            try {
-                Auth::loginUsingId($User->id);
-                return view('social');
-            } catch (\Throwable $e) {
-               logger(json_encode($e->getMessage()));
-            }
-        }
+    /**
+     * Always encrypt the password when it is updated.
+     *
+     * @param $value
+    * @return string
+    */
+    public function setPasswordAttribute($value){
+        $this->attributes['password'] = bcrypt($value);
     }
 
-    public function logout(){
-        Auth::logout();
-        return view('social');
-    }
+    
 
-    public function dashboard(){
-        return view('social');
-    }
+    
 }

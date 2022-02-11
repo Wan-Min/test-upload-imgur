@@ -6,8 +6,15 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-
+use Illuminate\Support\Facades\Auth;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function loginPage(){
+        logger(json_encode(auth()->user()));
+        logger(json_encode(Auth::user()));
+        logger(json_encode(Auth::check()));
+        return view('social');
+    }
 }
