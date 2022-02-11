@@ -18,31 +18,67 @@ class SocialLoginController extends Controller
     }
 
     //Line callback
-    public function callback(){
+    public function lineCallback(){
         $socialUser = Socialite::driver('line')->stateless()->user();
-        $LineUser = User::where('lineID',$socialUser->getId())->first();
-
-        if($LineUser == null){
-            $LineUser = User::create([
-                'name' => $socialUser->getName(),
-                'email' => $socialUser->getEmail(),
-                'password' => $this->setPasswordAttribute('123456'),
-                'lineID' => $socialUser->getId(),
+        $checkUser = User::where('email',$socialUser->getEmail())->orWhere('lineID',$socialUser->getId())->first();
+        if(is_null($checkUser)){
+            $checkUser = $this->createSocialUser($socialUser, 'line');
+            // $LineUser = User::where('lineID',$socialUser->getId())->first();
+        }
+        else{
+            $checkUser->update([
+                'lineID' => $socialUser->getId()
             ]);
         }
 
-        Auth::login($LineUser);
+        Auth::login($checkUser);
         return redirect()->to('dashboard');
     }
 
-    /**
-     * Always encrypt the password when it is updated.
-     *
-     * @param $value
-    * @return string
-    */
-    public function setPasswordAttribute($value){
-        $this->attributes['password'] = bcrypt($value);
+    //Google授權
+    public function google(){
+        return Socialite::with('google')->redirect();
+    }
+
+    //Google callback
+    public function googleCallback(){
+        $socialUser = Socialite::driver('google')->stateless()->user();
+        $checkUser = User::where('email',$socialUser->getEmail())->orWhere('googleID',$socialUser->getId())->first();
+        if(is_null($checkUser)){
+            $checkUser = $this->createSocialUser($socialUser, 'google');
+        }
+        else{
+            $checkUser->update([
+                'googleID' => $socialUser->getId()
+            ]);
+        }
+
+        Auth::login($checkUser);
+        return redirect()->to('dashboard');
+    }
+
+    private function createSocialUser($data, $driver){
+        switch ($driver) {
+            case 'line':
+                return User::create([
+                    'name' => $data->getName(),
+                    'email' => $data->getEmail(),
+                    'password' => bcrypt('123456'),
+                    'lineID' => $data->getId(),
+                ]);
+                break;
+            case 'google':
+                return User::create([
+                    'name' => $data->getName(),
+                    'email' => $data->getEmail(),
+                    'password' => bcrypt('123456'),
+                    'googleID' => $data->getId(),
+                ]);
+                break;
+            default:
+                # code...
+                break;
+        }
     }
 
     

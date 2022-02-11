@@ -32,7 +32,11 @@ Route::group(['namespace'=>'Api'], function(){
     Route::group(['prefix'=>'social'], function(){
         Route::group(['prefix'=>'line'], function(){
             Route::get('/', 'SocialLoginController@line')->name('line.login');
-            Route::get('callback', 'SocialLoginController@callback')->name('line.callback');
+            Route::get('callback', 'SocialLoginController@lineCallback')->name('line.callback');
+        });
+        Route::group(['prefix'=>'google'], function(){
+            Route::get('/', 'SocialLoginController@google')->name('google.login');
+            Route::get('callback', 'SocialLoginController@googleCallback')->name('google.callback');
         });
     });
 });

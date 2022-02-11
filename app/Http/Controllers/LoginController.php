@@ -14,12 +14,9 @@ class LoginController extends Controller
 	}
 
     public function loginPage(){
-        logger(json_encode(auth()->user()));
-        logger(json_encode(Auth::user()));
-        logger(json_encode(Auth::check()));
         return view('social');
     }
-    
+
     public function login(Request $request){
         $credentials = [
             'email' => $request->email,
@@ -43,7 +40,7 @@ class LoginController extends Controller
 
     public function logout(){
         Auth::logout();
-        return view('social');
+        return redirect()->route('loginPage');
     }
 
     public function dashboard(){
