@@ -52,8 +52,11 @@ class SocialLoginController extends Controller
                 'googleID' => $socialUser->getId()
             ]);
         }
-
-        Auth::login($checkUser);
+        logger("check google login");
+        logger(json_encode($checkUser));
+        logger(json_encode(Auth::loginUsingId($checkUser->id)));
+        Auth::loginUsingId($checkUser->id);
+        // Auth::login($checkUser);
         return redirect()->to('dashboard');
     }
 

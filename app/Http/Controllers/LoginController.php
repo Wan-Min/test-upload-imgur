@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use App\Models\User;
 
 class LoginController extends Controller
@@ -25,7 +26,7 @@ class LoginController extends Controller
 
         if(!Auth::validate($credentials)):
             logger("validate error");
-            return redirect()->to('loginPage')
+            return redirect()->to('login')
                 ->withErrors(trans('auth.failed'));
         endif;
 
@@ -39,8 +40,9 @@ class LoginController extends Controller
     }
 
     public function logout(){
+        Session::flush();
         Auth::logout();
-        return redirect()->route('loginPage');
+        return redirect()->route('login');
     }
 
     public function dashboard(){

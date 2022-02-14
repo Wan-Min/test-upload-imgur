@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () { return view('imgur'); });
 
-Route::get('login-page','LoginController@loginPage')->name('loginPage');
-Route::post('/login', 'LoginController@login')->name('user.login');
+Route::get('login-page','LoginController@loginPage')->name('login');
+Route::post('/login-page', 'LoginController@login')->name('user.login');
 Route::get('logout', 'LoginController@logout')->name('user.logout');
 Route::group(['middleware'=>'auth:web'], function(){
     Route::get('dashboard', 'LoginController@dashboard')->name('dashboard');
