@@ -60,6 +60,28 @@ class SocialLoginController extends Controller
         return redirect()->to('dashboard');
     }
 
+     //Facebook授權
+     public function facebook(){
+        return Socialite::with('facebook')->redirect();
+    }
+
+    //Facebook callback
+    public function facebookCallback(){
+        $socialUser = Socialite::driver('facebook')->stateless()->user();
+        $checkUser = User::where('email',$socialUser->getEmail())->orWhere('facebookID',$socialUser->getId())->first();
+        if(is_null($checkUser)){
+            $checkUser = $this->createSocialUser($socialUser, 'facebook');
+        }
+        else{
+            $checkUser->update([
+                'facebookID' => $socialUser->getId()
+            ]);
+        }
+
+        Auth::login($checkUser);
+        return redirect()->to('dashboard');
+    }
+
     private function createSocialUser($data, $driver){
         switch ($driver) {
             case 'line':
@@ -76,6 +98,14 @@ class SocialLoginController extends Controller
                     'email' => $data->getEmail(),
                     'password' => bcrypt('123456'),
                     'googleID' => $data->getId(),
+                ]);
+                break;
+            case 'facebook':
+                return User::create([
+                    'name' => $data->getName(),
+                    'email' => $data->getEmail(),
+                    'password' => bcrypt('123456'),
+                    'facebookID' => $data->getId(),
                 ]);
                 break;
             default:

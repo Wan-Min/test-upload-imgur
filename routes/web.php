@@ -38,5 +38,9 @@ Route::group(['namespace'=>'Api'], function(){
             Route::get('/', 'SocialLoginController@google')->name('google.login');
             Route::get('callback', 'SocialLoginController@googleCallback')->name('google.callback');
         });
+        Route::group(['prefix'=>'facebook'], function(){
+            Route::get('/', 'SocialLoginController@facebook')->name('facebook.login');
+            Route::get('callback', 'SocialLoginController@facebookCallback')->name('facebook.callback');
+        });
     });
 });

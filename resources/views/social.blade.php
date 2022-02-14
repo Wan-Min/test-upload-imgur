@@ -24,9 +24,11 @@
             <div class="form-group">
                 <a href="{{ route('line.login') }}"><img src="/images/btn_login_base.png"></a>
             </div>
-            
             <div class="form-group">
                 <a href="{{ route('google.login') }}"><img src="/images/btn_google_signin_light_normal.png"></a>
+            </div>
+            <div class="form-group">
+                <a href="{{ route('facebook.login') }}"><img src="/images/btn_facebook_login_base.png"></a>
             </div>
     </div>
 @endsection
