@@ -19,20 +19,21 @@ class SocialLoginController extends Controller
 
     //Line callback
     public function lineCallback(){
-        $socialUser = Socialite::driver('line')->stateless()->user();
-        $checkUser = User::where('email',$socialUser->getEmail())->orWhere('lineID',$socialUser->getId())->first();
-        if(is_null($checkUser)){
-            $checkUser = $this->createSocialUser($socialUser, 'line');
-            // $LineUser = User::where('lineID',$socialUser->getId())->first();
-        }
-        else{
-            $checkUser->update([
-                'lineID' => $socialUser->getId()
-            ]);
-        }
+        try {
+            $socialUser = Socialite::driver('line')->stateless()->user();
+            $checkUser = User::where('email',$socialUser->getEmail())->orWhere('lineID',$socialUser->getId())->first();
+            if(is_null($checkUser)) $checkUser = $this->createSocialUser($socialUser, 'line');
+            else{
+                $checkUser->update([
+                    'lineID' => $socialUser->getId()
+                ]);
+            }
 
-        Auth::login($checkUser);
-        return redirect()->to('dashboard');
+            Auth::login($checkUser);
+            return redirect()->to('dashboard');
+        } catch (\Throwable $e) {
+            logger(json_encode($e->getMessage()));
+        }
     }
 
     //Google授權
@@ -42,22 +43,22 @@ class SocialLoginController extends Controller
 
     //Google callback
     public function googleCallback(){
-        $socialUser = Socialite::driver('google')->stateless()->user();
-        $checkUser = User::where('email',$socialUser->getEmail())->orWhere('googleID',$socialUser->getId())->first();
-        if(is_null($checkUser)){
-            $checkUser = $this->createSocialUser($socialUser, 'google');
+        try {
+            $socialUser = Socialite::driver('google')->stateless()->user();
+            $checkUser = User::where('email',$socialUser->getEmail())->orWhere('googleID',$socialUser->getId())->first();
+            if(is_null($checkUser)){
+                $checkUser = $this->createSocialUser($socialUser, 'google');
+            }
+            else{
+                $checkUser->update([
+                    'googleID' => $socialUser->getId()
+                ]);
+            }
+            Auth::loginUsingId($checkUser->id);
+            return redirect()->to('dashboard');
+        } catch (\Throwable $e) {
+            logger(json_encode($e->getMessage()));
         }
-        else{
-            $checkUser->update([
-                'googleID' => $socialUser->getId()
-            ]);
-        }
-        logger("check google login");
-        logger(json_encode($checkUser));
-        logger(json_encode(Auth::loginUsingId($checkUser->id)));
-        Auth::loginUsingId($checkUser->id);
-        // Auth::login($checkUser);
-        return redirect()->to('dashboard');
     }
 
      //Facebook授權
@@ -67,19 +68,23 @@ class SocialLoginController extends Controller
 
     //Facebook callback
     public function facebookCallback(){
-        $socialUser = Socialite::driver('facebook')->stateless()->user();
-        $checkUser = User::where('email',$socialUser->getEmail())->orWhere('facebookID',$socialUser->getId())->first();
-        if(is_null($checkUser)){
-            $checkUser = $this->createSocialUser($socialUser, 'facebook');
-        }
-        else{
-            $checkUser->update([
-                'facebookID' => $socialUser->getId()
-            ]);
-        }
+        try {
+            $socialUser = Socialite::driver('facebook')->stateless()->user();
+            $checkUser = User::where('email',$socialUser->getEmail())->orWhere('facebookID',$socialUser->getId())->first();
+            if(is_null($checkUser)){
+                $checkUser = $this->createSocialUser($socialUser, 'facebook');
+            }
+            else{
+                $checkUser->update([
+                    'facebookID' => $socialUser->getId()
+                ]);
+            }
 
-        Auth::login($checkUser);
-        return redirect()->to('dashboard');
+            Auth::login($checkUser);
+            return redirect()->to('dashboard');
+        } catch (\Throwable $e) {
+            logger(json_encode($e->getMessage()));
+        }
     }
 
     private function createSocialUser($data, $driver){
