@@ -19,11 +19,11 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, $guards = null)
     {
-        logger(json_encode($guards));
-        logger(json_encode(Auth::user()));
-        logger(json_encode(Auth::check()));
+        // logger(json_encode($guards));
+        // logger(json_encode(Auth::user()));
+        // logger(json_encode(Auth::check()));
         if (Auth::guard($guards)->check()) {
-            logger(json_encode($guards));
+            // logger(json_encode($guards));
             if($guards == 'web'){
                 return redirect()->to('dashboard');
             }

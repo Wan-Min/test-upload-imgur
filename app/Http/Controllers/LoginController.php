@@ -18,6 +18,27 @@ class LoginController extends Controller
         return view('social');
     }
 
+    public function registerPage(){
+        return view('register');
+    }
+
+    public function register(Request $request){
+
+        $check = User::where('email',$request->email)->first();
+        if(!is_null($check)){
+            return redirect()->route('login')->withErrors('此信箱已經註冊過，請直接登入或嘗試第三方登入');
+        }
+        else{
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+            ]);
+            Auth::login($user);
+            return $this->authenticated($request, $user);
+        }
+    }
+
     public function login(Request $request){
         $credentials = [
             'email' => $request->email,

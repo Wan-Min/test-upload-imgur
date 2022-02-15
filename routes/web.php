@@ -18,6 +18,8 @@ Route::get('/', function () { return view('imgur'); });
 Route::get('login-page','LoginController@loginPage')->name('login');
 Route::post('/login-page', 'LoginController@login')->name('user.login');
 Route::get('logout', 'LoginController@logout')->name('user.logout');
+Route::get('register-page', 'LoginController@registerPage')->name('registerPage');
+Route::post('register', 'LoginController@register')->name('user.register');
 Route::group(['middleware'=>'auth:web'], function(){
     Route::get('dashboard', 'LoginController@dashboard')->name('dashboard');
 });
